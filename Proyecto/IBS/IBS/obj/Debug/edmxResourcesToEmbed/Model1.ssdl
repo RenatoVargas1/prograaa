@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="IBSModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Acceso">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="contraseña" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="UsuarioDni" Type="nchar" MaxLength="8" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Empresa">
+    <Key>
+      <PropertyRef Name="RUC" />
+    </Key>
+    <Property Name="RUC" Type="nchar" MaxLength="12" Nullable="false" />
+    <Property Name="RazonSocial" Type="nvarchar" MaxLength="80" Nullable="false" />
+    <Property Name="Direccion" Type="nvarchar" MaxLength="80" Nullable="false" />
+    <Property Name="Telefono" Type="nchar" MaxLength="9" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Estado">
+    <Key>
+      <PropertyRef Name="Codigo" />
+    </Key>
+    <Property Name="Codigo" Type="nchar" MaxLength="4" Nullable="false" />
+    <Property Name="Descripcion" Type="nvarchar" MaxLength="50" />
+  </EntityType>
+  <EntityType Name="Lineas">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Nombre" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="Empresa" Type="nchar" MaxLength="12" Nullable="false" />
+    <Property Name="Estado" Type="nchar" MaxLength="4" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Paradero">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="Descripcion" Type="nvarchar" MaxLength="80" Nullable="false" />
+  </EntityType>
+  <EntityType Name="RutaLinea">
+    <Key>
+      <PropertyRef Name="Linea" />
+      <PropertyRef Name="Paradero" />
+    </Key>
+    <Property Name="Linea" Type="int" Nullable="false" />
+    <Property Name="Paradero" Type="int" Nullable="false" />
+    <Property Name="Ruta" Type="nchar" MaxLength="6" />
+    <Property Name="Numero" Type="int" />
+  </EntityType>
+  <EntityType Name="TipoUsuario">
+    <Key>
+      <PropertyRef Name="Codigo" />
+    </Key>
+    <Property Name="Codigo" Type="nchar" MaxLength="4" Nullable="false" />
+    <Property Name="Descripcion" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Usuario">
+    <Key>
+      <PropertyRef Name="Dni" />
+    </Key>
+    <Property Name="Apellidos" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Nombres" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Dni" Type="nchar" MaxLength="8" Nullable="false" />
+    <Property Name="Telefono" Type="nchar" MaxLength="9" Nullable="false" />
+    <Property Name="Direccion" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Correo" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="TipoUsuario" Type="nchar" MaxLength="4" Nullable="false" />
+    <Property Name="Empresa" Type="nchar" MaxLength="12" />
+  </EntityType>
+  <Association Name="FK_Acceso_Usuario">
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="1" />
+    <End Role="Acceso" Type="Self.Acceso" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Usuario">
+        <PropertyRef Name="Dni" />
+      </Principal>
+      <Dependent Role="Acceso">
+        <PropertyRef Name="UsuarioDni" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Lineas_Empresa">
+    <End Role="Empresa" Type="Self.Empresa" Multiplicity="1" />
+    <End Role="Lineas" Type="Self.Lineas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empresa">
+        <PropertyRef Name="RUC" />
+      </Principal>
+      <Dependent Role="Lineas">
+        <PropertyRef Name="Empresa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Lineas_Estado">
+    <End Role="Estado" Type="Self.Estado" Multiplicity="1" />
+    <End Role="Lineas" Type="Self.Lineas" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Estado">
+        <PropertyRef Name="Codigo" />
+      </Principal>
+      <Dependent Role="Lineas">
+        <PropertyRef Name="Estado" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RutaLinea_Lineas">
+    <End Role="Lineas" Type="Self.Lineas" Multiplicity="1" />
+    <End Role="RutaLinea" Type="Self.RutaLinea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Lineas">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RutaLinea">
+        <PropertyRef Name="Linea" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_RutaLinea_Paradero">
+    <End Role="Paradero" Type="Self.Paradero" Multiplicity="1" />
+    <End Role="RutaLinea" Type="Self.RutaLinea" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Paradero">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="RutaLinea">
+        <PropertyRef Name="Paradero" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_Empresa">
+    <End Role="Empresa" Type="Self.Empresa" Multiplicity="0..1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Empresa">
+        <PropertyRef Name="RUC" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="Empresa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Usuario_TipoUsuario">
+    <End Role="TipoUsuario" Type="Self.TipoUsuario" Multiplicity="1" />
+    <End Role="Usuario" Type="Self.Usuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TipoUsuario">
+        <PropertyRef Name="Codigo" />
+      </Principal>
+      <Dependent Role="Usuario">
+        <PropertyRef Name="TipoUsuario" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="IBSModelStoreContainer">
+    <EntitySet Name="Acceso" EntityType="Self.Acceso" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Empresa" EntityType="Self.Empresa" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Estado" EntityType="Self.Estado" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Lineas" EntityType="Self.Lineas" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Paradero" EntityType="Self.Paradero" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="RutaLinea" EntityType="Self.RutaLinea" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="TipoUsuario" EntityType="Self.TipoUsuario" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Acceso_Usuario" Association="Self.FK_Acceso_Usuario">
+      <End Role="Usuario" EntitySet="Usuario" />
+      <End Role="Acceso" EntitySet="Acceso" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Lineas_Empresa" Association="Self.FK_Lineas_Empresa">
+      <End Role="Empresa" EntitySet="Empresa" />
+      <End Role="Lineas" EntitySet="Lineas" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Lineas_Estado" Association="Self.FK_Lineas_Estado">
+      <End Role="Estado" EntitySet="Estado" />
+      <End Role="Lineas" EntitySet="Lineas" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RutaLinea_Lineas" Association="Self.FK_RutaLinea_Lineas">
+      <End Role="Lineas" EntitySet="Lineas" />
+      <End Role="RutaLinea" EntitySet="RutaLinea" />
+    </AssociationSet>
+    <AssociationSet Name="FK_RutaLinea_Paradero" Association="Self.FK_RutaLinea_Paradero">
+      <End Role="Paradero" EntitySet="Paradero" />
+      <End Role="RutaLinea" EntitySet="RutaLinea" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_Empresa" Association="Self.FK_Usuario_Empresa">
+      <End Role="Empresa" EntitySet="Empresa" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Usuario_TipoUsuario" Association="Self.FK_Usuario_TipoUsuario">
+      <End Role="TipoUsuario" EntitySet="TipoUsuario" />
+      <End Role="Usuario" EntitySet="Usuario" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
